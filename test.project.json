@@ -1,0 +1,21 @@
+{
+	"name": "rehitbox-test",
+	
+	"tree": {
+		"$className": "DataModel",
+
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+
+			"packages": {
+				"$className": "Folder",
+				"$ignoreUnknownInstances": true,
+
+				"rehitbox": {
+					"$path": "default.project.json",
+					"$ignoreUnknownInstances": true
+				}
+			}
+		}
+	}
+}
