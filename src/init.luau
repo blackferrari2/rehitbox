@@ -7,7 +7,8 @@ rehitbox.__index = rehitbox
 
 type self = {
 	hitboxes: {Part},
-	filter: OverlapParams,
+	whitelist: OverlapParams?,
+	blacklist: OverlapParams,
 }
 
 export type touches = {
@@ -22,11 +23,12 @@ local priorityAttribute = "rehitboxPriority"
 
 ------------
 
--- warning: filter doesnt support whitelist yet. if you set it to that, itll break.
-function rehitbox.new(): rehitbox
+-- whitelist will take priority over blacklist, if set
+function rehitbox.new(whitelist: OverlapParams?): rehitbox
 	local self = {
 		hitboxes = {},
-		filter = OverlapParams.new(),
+		whitelist = whitelist,
+		blacklist = OverlapParams.new(),
 	}
 
 	setmetatable(self, rehitbox)
@@ -42,7 +44,7 @@ end
 -- i.e: spheres will use GetPartsBoundInRadius
 function rehitbox.add(self: rehitbox, hitbox: Part, priority: number?)
 	table.insert(self.hitboxes, hitbox)
-	self.filter:AddToFilter(hitbox)
+	self.blacklist:AddToFilter(hitbox)
 
 	hitbox:SetAttribute(priorityAttribute)
 
@@ -61,9 +63,10 @@ end
 -- note: hitboxes cannot be hit by themselves or other hitboxes from same group
 function rehitbox.getTouchingParts(self: rehitbox): touches
 	local touches = {}
+	local filter = self.whitelist or self.blacklist
 
 	for _, hitbox in ipairs(self.hitboxes) do
-		local parts = query.get(hitbox, self.filter)
+		local parts = query.get(hitbox, filter)
 
 		for _, part in pairs(parts) do
 			-- ignore stuff already hit
