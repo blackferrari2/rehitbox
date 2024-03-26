@@ -33,7 +33,11 @@ function rehitbox.new(whitelist: OverlapParams?): rehitbox
 
 	setmetatable(self, rehitbox)
 
-	self.filter.FilterType = Enum.RaycastFilterType.Exclude
+	if whitelist then
+		whitelist.FilterType = Enum.RaycastFilterType.Include
+	end
+
+	self.blacklist.FilterType = Enum.RaycastFilterType.Exclude
 
 	return self
 end
